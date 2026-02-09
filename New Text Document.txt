@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share the Love | 2026 Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Keeps petals inside */
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            height: 100vh;
+        }
+
+        .romantic-font { font-family: 'Dancing Script', cursive; }
+
+        .petal {
+            position: fixed;
+            top: -10%;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <div id="card" class="glass-card w-full max-w-md p-8 text-center relative z-10 transition-all duration-500">
+        <h1 id="displayTitle" class="romantic-font text-4xl text-pink-600 mb-4">For Someone Special</h1>
+        
+        <div id="imageFrame" class="w-full h-48 bg-pink-100 rounded-lg mb-4 flex items-center justify-center border-2 border-dashed border-pink-300">
+            <span class="text-pink-400">📸 Your Photo Here</span>
+        </div>
+
+        <p id="displayMessage" class="text-gray-700 italic text-lg mb-6">
+            "Pick a message or write your own to start the magic!"
+        </p>
+
+        <div id="senderControls" class="space-y-4">
+            <input id="nameInput" type="text" placeholder="Recipient's Name" class="w-full p-2 rounded-md border border-pink-200">
+            
+            <select id="vibeSelect" class="w-full p-2 rounded-md border border-pink-200 bg-white">
+                <option value="romantic">Romantic (Roses)</option>
+                <option value="friend">Best Friend (Sunflowers)</option>
+                <option value="forgive">Healing (Leaves)</option>
+            </select>
+
+            <div class="flex gap-2 justify-center">
+                <button onclick="suggestMessage()" class="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition">✨ Suggest Message</button>
+            </div>
+
+            <button onclick="generateCard()" class="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold py-3 rounded-full shadow-lg">Generate & Share 🚀</button>
+        </div>
+
+        <div id="shareActions" class="hidden space-y-4">
+            <button onclick="downloadCard()" class="w-full border-2 border-pink-500 text-pink-500 py-2 rounded-full font-bold">📥 Download Image</button>
+            <button onclick="shareLink()" class="w-full bg-green-500 text-white py-2 rounded-full font-bold">📱 WhatsApp Share</button>
+            <p class="text-xs text-gray-500 mt-4">Wanna send love to someone else? <a href="#" onclick="location.reload()" class="underline text-pink-500">Start New</a></p>
+        </div>
+    </div>
+
+    <script>
+        // 1. Falling Petals Engine
+        function createPetal() {
+            const vibe = document.getElementById('vibeSelect').value;
+            let symbols = ['🌸', '💖', '🌹'];
+            if(vibe === 'friend') symbols = ['🌻', '✨', '⭐'];
+            if(vibe === 'forgive') symbols = ['🌿', '🍃', '🕊️'];
+
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 3 + 's';
+            petal.style.fontSize = Math.random() * 20 + 15 + 'px';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 6000);
+        }
+        setInterval(createPetal, 300);
+
+        // 2. Message Suggestions
+        const messages = {
+            romantic: ["You're the person my heart chose.", "Every day with you is a gift.", "I love you more than words can say."],
+            friend: ["You're the family I got to choose.", "To the person who makes me laugh until it hurts!", "Thanks for being my person."],
+            forgive: ["I value us more than our mistakes. Let's move forward?", "Missing our vibe. Can we start over?", "Sending love and an olive branch."]
+        };
+
+        function suggestMessage() {
+            const vibe = document.getElementById('vibeSelect').value;
+            const category = messages[vibe];
+            const randomMsg = category[Math.floor(Math.random() * category.length)];
+            document.getElementById('displayMessage').innerText = randomMsg;
+        }
+
+        // 3. Generate Flow
+        function generateCard() {
+            const name = document.getElementById('nameInput').value;
+            if(!name) return alert("Please enter a name!");
+            
+            document.getElementById('displayTitle').innerText = `For ${name}`;
+            document.getElementById('senderControls').classList.add('hidden');
+            document.getElementById('shareActions').classList.remove('hidden');
+            
+            // Trigger a little celebration burst
+            for(let i=0; i<20; i++) setTimeout(createPetal, i*50);
+        }
+
+        function shareLink() {
+            alert("Link copied! (In a real app, this would use the Web Share API)");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sovereign Soul | NAFSI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+        
+        /* THEME: Royal Dark Mode */
+        body { 
+    font-family: 'Montserrat', sans-serif; 
+    background: #0f172a; 
+    color: #fcd34d; 
+    /* Changed these two lines */
+    overflow-y: auto; 
+    overflow-x: hidden; /* Keeps the embers from causing side-scrolling */
+    min-height: 100vh; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0; /* Adds a little breathing room at top/bottom */
+}
+
+/* helper function css */
+#createPage, #revealPage {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+        .royal-font { font-family: 'Cinzel', serif; }
+        
+        /* GLASS CARD: Darker, frosted gold */
+        .glass-dark { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(251, 191, 36, 0.3); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        }
+
+        /* ANIMATION: Rising Embers (Strength) instead of Falling Petals */
+        .ember {
+            position: fixed;
+            bottom: -10px;
+            width: 4px;
+            height: 4px;
+            background: #fbbf24;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px #fbbf24;
+            animation: rise linear forwards;
+            opacity: 0;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-110vh) scale(0); opacity: 0; }
+        }
+
+        /* GLOWING INPUTS */
+        .royal-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #78350f;
+            color: #fbbf24;
+            transition: all 0.3s ease;
+        }
+        .royal-input:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+            outline: none;
+        }
+
+        /* BUTTON PULSE */
+        .pulse-gold { animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 1s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="relative">
+
+    <div id="introPage" class="text-center z-10 p-6 fade-in">
+        <div class="mb-6 text-6xl">🦁</div>
+        <h1 class="royal-font text-5xl md:text-7xl text-amber-400 mb-4 tracking-wider">NAFSI</h1>
+        <p class="text-amber-100/60 uppercase tracking-[0.3em] text-xs mb-8">The Kingdom Within</p>
+        <button onclick="enterSanctuary()" class="px-10 py-4 border border-amber-500 text-amber-400 rounded-none uppercase tracking-widest hover:bg-amber-500 hover:text-black transition duration-500 font-bold">
+            Enter Sanctuary
+        </button>
+        <br>
+        <a href="index.html" class="inline-block mt-8 text-[10px] text-gray-600 uppercase tracking-widest hover:text-gray-400 transition">Return to Hub</a>
+    </div>
+
+    <div id="createPage" class="hidden z-10 w-full max-w-lg p-4">
+        <div class="glass-dark p-8 md:p-10 rounded-xl relative">
+            <h2 class="royal-font text-3xl text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">Royal Decree</h2>
+            
+            <label class="block text-[10px] uppercase tracking-widest text-amber-600 mb-2">Your Title</label>
+            <input id="userName" type="text" placeholder="e.g. King David / Queen Neema" 
+                   class="royal-input w-full p-4 mb-6 rounded text-center font-bold font-serif text-lg">
+
+            <label class="block text-[10px] uppercase tracking-widest text-amber-600 mb-2">Your Oath to Yourself</label>
+            <textarea id="userOath" rows="4" placeholder="I hereby promise to..." 
+                      class="royal-input w-full p-4 mb-6 rounded text-lg italic serif"></textarea>
+
+            <div class="flex gap-2 justify-center mb-6">
+                <button onclick="quickFill('strength')" class="px-4 py-2 border border-amber-900 text-amber-700 text-[10px] hover:border-amber-500 hover:text-amber-500 transition">Strength</button>
+                <button onclick="quickFill('peace')" class="px-4 py-2 border border-amber-900 text-amber-700 text-[10px] hover:border-amber-500 hover:text-amber-500 transition">Peace</button>
+                <button onclick="quickFill('glory')" class="px-4 py-2 border border-amber-900 text-amber-700 text-[10px] hover:border-amber-500 hover:text-amber-500 transition">Glory</button>
+            </div>
+
+            <button onclick="sealOath()" class="w-full bg-gradient-to-r from-amber-600 to-amber-400 text-black py-4 font-bold uppercase tracking-widest hover:brightness-110 transition shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+                Seal This Oath 🖋️
+            </button>
+        </div>
+    </div>
+
+    <div id="revealPage" class="hidden z-10 w-full max-w-xl p-4 flex-col items-center">
+        
+        <div id="captureArea" class="glass-dark p-12 border-4 border-double border-amber-600/30 text-center relative w-full mb-8">
+            <div class="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-amber-500"></div>
+            <div class="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-amber-500"></div>
+            <div class="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-amber-500"></div>
+            <div class="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-amber-500"></div>
+
+            <div class="text-4xl mb-6 opacity-80">👑</div>
+            <p class="text-[10px] uppercase tracking-[0.4em] text-amber-600 mb-4">Official Decree</p>
+            
+            <h3 id="finalName" class="royal-font text-2xl md:text-4xl text-amber-300 mb-8 uppercase"></h3>
+            
+            <div class="h-px w-20 bg-amber-800 mx-auto mb-8"></div>
+            
+            <p id="finalOath" class="royal-font text-xl md:text-2xl text-amber-100 leading-relaxed italic"></p>
+            
+            <div class="mt-10 flex justify-center items-center gap-2 opacity-60">
+                <div class="w-12 h-12 border-2 border-amber-700 rounded-full flex items-center justify-center">
+                    <span class="text-[8px] uppercase text-amber-700 font-bold -rotate-12">Verified</span>
+                </div>
+                <div class="text-[10px] text-amber-800 uppercase tracking-widest text-left">
+                    Signed by Soul<br> Dar es Salaam
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-4">
+            <button onclick="downloadOath()" class="px-8 py-3 bg-amber-900/50 border border-amber-600 text-amber-400 rounded hover:bg-amber-800 transition uppercase text-xs tracking-widest">
+                Download Decree
+            </button>
+            <button onclick="location.reload()" class="px-8 py-3 border border-gray-700 text-gray-500 rounded hover:text-gray-300 transition uppercase text-xs tracking-widest">
+                New Oath
+            </button>
+        </div>
+    </div>
+
+    <audio id="soulAudio" loop>
+        <source src="Two Steps From Hell.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sealSound">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c29e62319f.mp3?filename=cinematic-boom-10175.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        // --- 1. Animation Logic (Rising Embers) ---
+        function spawnEmber() {
+            const ember = document.createElement('div');
+            ember.className = 'ember';
+            ember.style.left = Math.random() * 100 + 'vw';
+            ember.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            ember.style.opacity = Math.random();
+            document.body.appendChild(ember);
+            setTimeout(() => ember.remove(), 5000);
+        }
+        setInterval(spawnEmber, 100);
+
+        // --- 2. Navigation Logic ---
+        function enterSanctuary() {
+            document.getElementById('introPage').classList.add('hidden');
+            document.getElementById('createPage').classList.remove('hidden');
+            document.getElementById('createPage').classList.add('fade-in');
+            
+            // Play Audio (Cinematic)
+            document.getElementById('soulAudio').play().catch(e => console.log("Audio requires interaction"));
+        }
+
+        // --- 3. Content Logic ---
+        const prompts = {
+            strength: "I vow to stand tall like a mountain, even when the wind blows hardest. I am my own anchor.",
+            peace: "I promise to forgive myself for the battles I did not win. My peace is my new power.",
+            glory: "I acknowledge that I am capable of greatness. I will wear my scars like gold."
+        };
+
+        function quickFill(type) {
+            document.getElementById('userOath').value = prompts[type];
+        }
+
+        function sealOath() {
+            const name = document.getElementById('userName').value || "The Sovereign Soul";
+            const oath = document.getElementById('userOath').value;
+
+            if(!oath.trim()) return alert("A decree cannot be empty, Your Highness.");
+
+            document.getElementById('finalName').innerText = name;
+            document.getElementById('finalOath').innerText = `"${oath}"`;
+
+            document.getElementById('createPage').classList.add('hidden');
+            document.getElementById('revealPage').classList.remove('hidden');
+            document.getElementById('revealPage').classList.add('fade-in');
+        }
+
+        // --- 4. Download Logic ---
+        function downloadOath() {
+            const area = document.getElementById('captureArea');
+            html2canvas(area, {
+                backgroundColor: null,
+                scale: 2
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'My_Royal_Decree.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>

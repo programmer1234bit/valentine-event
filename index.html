@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Love Hub | 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,600&family=Poppins:wght@300;400;600&display=swap');
+        
+		body { 
+    font-family: 'Poppins', sans-serif; 
+    background: #fff5f7; 
+    transition: background 1.5s ease; 
+    margin: 0; 
+    overflow-y: auto; /* Changed: allows vertical scrolling */
+    min-height: 100vh; /* Changed: allows page to grow longer than the screen */
+}
+        .page { 
+    display: none; 
+    min-height: 100vh; /* Changed: ensures it covers the screen but can grow */
+    width: 100%; 
+    padding: 40px 20px; /* Added more padding for breathability */
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 10; 
+    position: relative; 
+}
+        .active { display: flex; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .petal { position: fixed; top: -10%; pointer-events: none; animation: fall linear infinite; z-index: 5; }
+        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        .glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(15px); border-radius: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .romantic-font { font-family: 'Dancing Script', cursive; }
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        /* Pulse Animation for Play Button */
+        .music-playing { animation: pulse 2s infinite; color: #ef4444; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Recipient Interaction Overlay */
+        #audioOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+    </style>
+    <!-- Open Graph Meta Tags for Better Sharing -->
+    <meta property="og:title" content="Love Hub | A Special Message For You ❤️">
+    <meta property="og:description" content="Someone sent you a heartfelt message from Dar es Salaam. Open to see!">
+    <meta property="og:image" content="https://example.com/lovehub-preview.jpg"> <!-- Replace with your actual preview image URL -->
+    <meta property="og:url" content="https://your-domain.com/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+
+    <div id="audioOverlay">
+        <h2 class="romantic-font text-6xl mb-6">You have a message...</h2>
+        <button onclick="unlockAudio()" class="px-10 py-5 bg-red-600 rounded-full font-bold animate-bounce text-xl shadow-2xl">Open with Music 🎵</button>
+    </div>
+
+    <div id="page1" class="page active">
+        <h1 class="romantic-font text-7xl text-red-600 mb-2">Love Hub</h1>
+        <p class="text-gray-500 mb-10 tracking-widest text-xs uppercase text-center">Select your vibe to start</p>
+        <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+    <button onclick="pickVibe('romantic')" class="glass p-6 flex flex-col items-center hover:scale-105 transition shadow-lg">
+        <span class="text-4xl mb-2">❤️</span>
+        <span class="font-bold text-red-600 uppercase text-[10px]">Romance</span>
+    </button>
+    <button onclick="pickVibe('bestie')" class="glass p-6 flex flex-col items-center hover:scale-105 transition shadow-lg">
+        <span class="text-4xl mb-2">🤝</span>
+        <span class="font-semibold text-yellow-700 uppercase text-[10px]">Bestie</span>
+    </button>
+
+    <button onclick="pickVibe('healing')" class="glass p-6 flex flex-col items-center hover:scale-105 transition shadow-lg">
+        <span class="text-4xl mb-2">🌿</span>
+        <span class="font-semibold text-green-700 uppercase text-[10px]">Forgive</span>
+    </button>
+    <button onclick="pickVibe('family')" class="glass p-6 flex flex-col items-center hover:scale-105 transition shadow-lg">
+        <span class="text-4xl mb-2">👨‍👩‍👧</span>
+        <span class="font-semibold text-orange-700 uppercase text-[10px]">Family</span>
+    </button>
+
+    <button onclick="window.location.href='soul.html'" 
+        class="col-span-2 relative glass p-8 flex flex-col items-center ...">
+    <div class="absolute inset-0 bg-gradient-to-r from-amber-400/20 ..."></div>
+    <span class="text-5xl mb-2 drop-shadow-md">👑</span>
+    <span class="font-black text-amber-800 uppercase tracking-widest text-base">NAFSI: THE KING WITHIN</span>
+    <span class="text-amber-700 text-[10px] italic">Self-Love & Empowerment</span>
+</button>
+</div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="glass w-full max-w-xl p-8 flex flex-col shadow-2xl">
+            <h2 id="pageTitle" class="romantic-font text-5xl mb-6 text-red-600 text-center">Your Message</h2>
+            
+            <input id="recName" type="text" placeholder="Recipient's Name" class="w-full mb-2 p-4 rounded-xl bg-white border-none outline-none text-center shadow-sm text-lg" onchange="updateNameMeaning()">
+            <p id="nameMeaning" class="text-xs text-gray-400 italic text-center mb-4 h-4"></p>
+            
+            <textarea id="messageInput" class="w-full p-6 rounded-xl bg-white border-none focus:ring-2 focus:ring-red-400 outline-none text-gray-700 serif-font italic text-2xl shadow-inner mb-4" rows="5" placeholder="Write from the heart..."></textarea>
+            
+            <div class="mb-4 flex gap-2 justify-center">
+                <button onclick="setCustomColor('#ff4d4d')" class="w-8 h-8 rounded-full bg-red-500 border-2 border-gray-300 hover:border-red-700 transition"></button>
+                <button onclick="setCustomColor('#ff6b9d')" class="w-8 h-8 rounded-full bg-pink-400 border-2 border-gray-300 hover:border-pink-600 transition"></button>
+                <button onclick="setCustomColor('#ffd93d')" class="w-8 h-8 rounded-full bg-yellow-300 border-2 border-gray-300 hover:border-yellow-500 transition"></button>
+                <button onclick="setCustomColor('#6bcf7f')" class="w-8 h-8 rounded-full bg-green-400 border-2 border-gray-300 hover:border-green-600 transition"></button>
+                <button onclick="setCustomColor('#a29bfe')" class="w-8 h-8 rounded-full bg-purple-400 border-2 border-gray-300 hover:border-purple-600 transition"></button>
+            </div>
+
+            <label class="flex items-center gap-2 mb-4 text-sm text-gray-600">
+                <input id="anonymousToggle" type="checkbox" class="w-4 h-4">
+                Send anonymously (receiver won't know who sent this)
+            </label>
+            
+            <a href="message.html" class="w-full mb-4 py-3 bg-white border-2 border-red-100 text-red-500 rounded-full font-bold text-center hover:bg-red-50 transition shadow-sm block decoration-none">
+                🤖 Suggest a Message (AI Library)
+            </a>
+
+            <button onclick="revealCard()" class="w-full bg-red-600 text-white py-5 rounded-full font-bold shadow-xl uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">Create Magic ✨</button>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
+        <div id="captureArea" class="glass p-12 max-w-2xl w-full text-center shadow-2xl relative mb-6 border-white border-8">
+            <button onclick="toggleMusic()" id="musicBtn" class="absolute top-6 right-6 text-3xl opacity-60 hover:opacity-100 transition">🎵</button>
+            <div id="finalEmoji" class="text-8xl mb-6 drop-shadow-lg animate-bounce">❤️</div>
+            <h3 id="finalTo" class="uppercase tracking-[0.5em] text-xs mb-8 text-red-500 font-bold">TO MY VALENTINE</h3>
+            <p id="finalText" class="serif-font text-3xl text-gray-800 italic leading-relaxed mb-10"></p>
+            
+            <!-- RECEIVER REACTIONS (hidden for sender, shown for receiver) -->
+            <div id="reactionButtons" class="hidden flex justify-center gap-3 mt-6">
+                <button onclick="reactTo('❤️')" class="text-4xl hover:scale-125 transition">❤️</button>
+                <button onclick="reactTo('👏')" class="text-4xl hover:scale-125 transition">👏</button>
+                <button onclick="reactTo('😂')" class="text-4xl hover:scale-125 transition">😂</button>
+                <button onclick="reactTo('😢')" class="text-4xl hover:scale-125 transition">😢</button>
+            </div>
+        </div>
+
+        <div class="flex gap-4 flex-wrap justify-center">
+            <button onclick="copyCurrentLink()" class="px-6 py-2 bg-white text-gray-700 rounded-full text-sm font-bold shadow-sm hover:bg-gray-50 transition">📋 Copy Link</button>
+            <button onclick="shareLink()" class="px-6 py-2 bg-red-600 text-white rounded-full text-sm font-bold shadow-sm hover:bg-red-700 transition">🔗 Share</button>
+            <button onclick="downloadCard()" class="px-6 py-2 bg-white border border-red-200 text-red-500 rounded-full text-sm font-bold shadow-sm hover:bg-red-50 transition">📥 Download</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-4 opacity-70">Music starts on tap • Works best with sound on</p>
+        <button onclick="location.href=window.location.pathname" class="mt-8 text-sm text-gray-400 font-bold underline opacity-80">Send More Love</button>
+    </div>
+   
+
+    <audio id="audioPlayer" loop preload="auto">
+        <source src="https://audio.jukehost.co.uk/7IC401wCxd8QHJ5Wexoo5YVjAc90Hd8x" type="audio/mpeg">
+    </audio>
+
+    <script>
+    let currentVibe = 'romantic';
+    const player = document.getElementById('audioPlayer');
+    const musicBtn = document.getElementById('musicBtn');
+    
+    const petalEmoji = { romantic: '❤️', bestie: '👯', healing: '🌿', family: '👨‍👩‍👧', self: '👑' };
+    const vibeConfigs = {
+        romantic: { color: 'linear-gradient(135deg, #ff4d4d, #800000)' },
+        bestie: { color: 'linear-gradient(to bottom, #fef9c3, #ffffff)' },
+        healing: { color: 'linear-gradient(to bottom, #dcfce7, #ffffff)' },
+        family: { color: 'linear-gradient(to bottom, #ffedd5, #ffffff)' },
+        self: { color: 'linear-gradient(135deg, #fbbf24, #d97706)' }
+    };
+
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const isReceiver = params.has('msg'); // If link has ?msg, it's a receiver
+
+        if (isReceiver) {
+            // RECEIVER MODE: Show audio overlay & message
+            document.getElementById('audioOverlay').style.display = 'flex';
+            const msg = decodeURIComponent(params.get('msg'));
+            const name = decodeURIComponent(params.get('name') || "Someone Special");
+            currentVibe = params.get('vibe') || 'romantic';
+            
+            document.getElementById('finalTo').innerText = `TO ${name.toUpperCase()}`;
+            document.getElementById('finalText').innerText = `"${msg}"`;
+            document.getElementById('finalEmoji').innerText = petalEmoji[currentVibe];
+            document.body.style.background = vibeConfigs[currentVibe].color;
+            navigate('page3');
+            return;
+        }
+
+        // SENDER MODE: Return from AI library or start fresh
+        const libMsg = localStorage.getItem('libMessage');
+        const libName = localStorage.getItem('libName');
+        const libVibe = localStorage.getItem('libVibe');
+
+        if (libMsg) {
+            document.getElementById('messageInput').value = libMsg;
+            if (libName) document.getElementById('recName').value = libName;
+            if (libVibe) {
+                currentVibe = libVibe;
+                document.body.style.background = vibeConfigs[libVibe].color;
+            }
+            localStorage.clear();
+            navigate('page2');
+        }
+    };
+
+    function unlockAudio() {
+        document.getElementById('audioOverlay').style.display = 'none';
+        
+        // For Web Audio API contexts (if you ever switch), but here we use <audio>
+        const playPromise = player.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                musicBtn.classList.add('music-playing');
+                // Optional: show success toast
+                // alert("Music unlocked ❤️"); // or better: custom toast
+            }).catch(err => {
+                console.error("Audio still blocked:", err);
+                // Fallback: show music button prominently
+                musicBtn.style.opacity = '1';
+                musicBtn.style.fontSize = '2.5rem';
+                musicBtn.title = "Tap to play music 🎵";
+            });
+        }
+        
+        if (new URLSearchParams(window.location.search).has('msg')) {
+            document.getElementById('reactionButtons').classList.remove('hidden');
+            shootConfetti();
+        }
+    }
+
+    function navigate(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function pickVibe(vibe) {
+        currentVibe = vibe;
+        document.body.style.background = vibeConfigs[vibe].color;
+        navigate('page2');
+    }
+
+    let customBgColor = null;
+
+    function updateNameMeaning() {
+        const name = document.getElementById('recName').value;
+        if(!name) return;
+        
+        const meanings = {
+            'neema': '✨ Grace, blessing in Swahili',
+            'sophia': '🧠 Wisdom in Greek',
+            'amara': '🌸 Grace, eternal in Sanskrit',
+            'leo': '🦁 Lion in Latin',
+            'luna': '🌙 Moon in Latin',
+            'kai': '🌊 Sea in Hawaiian',
+            'maya': '🪄 Illusion in Sanskrit'
+        };
+        
+        const meaning = meanings[name.toLowerCase()];
+        document.getElementById('nameMeaning').innerText = meaning || '💖 A beautiful name deserves a beautiful message';
+    }
+
+    function setCustomColor(color) {
+        customBgColor = color;
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('border-gray-800'));
+        event.target.classList.add('border-gray-800');
+    }
+
+   function revealCard() {
+    const nameInput = document.getElementById('recName').value;
+    const msg = document.getElementById('messageInput').value;
+    
+    if (!msg.trim()) return alert("Write something from the heart first... 💌");
+
+    const captureArea = document.getElementById('captureArea');
+    const finalTo = document.getElementById('finalTo');
+    const finalText = document.getElementById('finalText');
+
+    // NAFSI SPECIAL THEME LOGIC
+    if (currentVibe === 'self') {
+        const displayName = nameInput || "My Eternal Soul";
+        finalTo.innerText = `OATH TO: ${displayName.toUpperCase()}`;
+        finalTo.style.color = "#fbbf24"; // Gold
+        captureArea.style.background = "#1a1a1a"; // Dark background
+        captureArea.style.borderColor = "#fbbf24"; // Gold border
+        finalText.style.color = "#ffffff"; // White text for contrast
+    } else {
+        // Default Logic for other vibes
+        const isAnonymous = document.getElementById('anonymousToggle').checked;
+        const anonNames = ["Your Secret Admirer 🕵️", "A Star from Dar ✨", "Your Midnight Poet ✍️"];
+        const displayName = isAnonymous ? anonNames[Math.floor(Math.random() * anonNames.length)] : (nameInput || "Someone Special");
+        
+        finalTo.innerText = `TO ${displayName.toUpperCase()}`;
+        finalTo.style.color = ""; // Reset to CSS default
+        captureArea.style.background = ""; // Reset
+        captureArea.style.borderColor = ""; // Reset
+        finalText.style.color = ""; // Reset
+    }
+
+    finalText.innerText = `"${msg}"`;
+    document.getElementById('finalEmoji').innerText = petalEmoji[currentVibe];
+    
+    player.play();
+    musicBtn.classList.add('music-playing');
+    navigate('page3');
+}
+
+    function toggleMusic() {
+        if (player.paused) {
+            player.play().then(() => {
+                musicBtn.classList.add('music-playing');
+            }).catch(() => {
+                alert("Tap again or check your sound settings 🎧");
+            });
+        } else {
+            player.pause();
+            musicBtn.classList.remove('music-playing');
+        }
+    }
+
+    function generateShareUrl() {
+        const msg = encodeURIComponent(document.getElementById('finalText').innerText.replace(/"/g, ''));
+        const name = encodeURIComponent(document.getElementById('recName').value || "Someone Special");
+        const baseUrl = window.location.origin + window.location.pathname;
+        // Remove ?sender=true - receivers don't need it. Just share the message link
+        return `${baseUrl}?msg=${msg}&name=${name}&vibe=${currentVibe}`;
+    }
+
+    function copyCurrentLink() {
+        navigator.clipboard.writeText(generateShareUrl()).then(() => {
+            alert("✅ Link copied! Send this to your Valentine. 💕");
+        });
+    }
+
+    function shareLink() {
+        const url = generateShareUrl();
+        if (navigator.share) {
+            navigator.share({ 
+                title: 'A Love Message For You ❤️', 
+                text: 'Someone special sent you a Valentine message!',
+                url: url 
+            });
+        } else {
+            copyCurrentLink();
+        }
+    }
+
+    function downloadCard() {
+        const area = document.getElementById('captureArea');
+        const isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent);
+        const delay = isMobile ? 800 : 200; // give time for render
+
+        // Optional: force eager on images if any (you don't have many, but good practice)
+        document.querySelectorAll('img').forEach(img => img.loading = 'eager');
+
+        setTimeout(() => {
+            html2canvas(area, {
+                scale: isMobile ? 2 : 3,          // lower on mobile to avoid crash
+                useCORS: true,
+                backgroundColor: null,
+                logging: true,                    // helps debug in console
+                allowTaint: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `LoveHub_${new Date().toISOString().slice(0,10)}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }).catch(err => {
+                console.error("Capture failed:", err);
+                alert("Couldn't create image automatically 😅\nTry taking a screenshot with your phone!");
+            });
+        }, delay);
+    }
+
+    function spawnPetal() {
+        if (document.querySelectorAll('.petal').length > 12) return; 
+        const p = document.createElement('div');
+        p.className = 'petal';
+        p.innerHTML = petalEmoji[currentVibe] || '❤️';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        p.style.fontSize = (Math.random() * 20 + 20) + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+    }
+    
+    setInterval(spawnPetal, 800);
+
+    function reactTo(emoji) {
+        alert(`You reacted: ${emoji}`);
+        // In a real app, this would send reaction back to sender
+    }
+
+    function shootConfetti() {
+        for(let i = 0; i < 30; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.className = 'petal';
+                p.innerHTML = ['❤️', '✨', '🌟', '💖'][Math.floor(Math.random() * 4)];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                p.style.fontSize = (Math.random() * 15 + 20) + 'px';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 4000);
+            }, i * 50);
+        }
+    }
+    </script>
+</body>
+</html>

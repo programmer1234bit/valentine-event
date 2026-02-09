@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Void | Premium Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #fff5f7; 
+            padding: 20px; 
+            transition: background 0.8s ease-in-out;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .romantic-font { font-family: 'Dancing Script', cursive; }
+        
+        .particle {
+            position: fixed;
+            top: -10%;
+            pointer-events: none;
+            z-index: 0;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        .glass { 
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .card-option { 
+            background: rgba(255, 255, 255, 0.8); 
+            padding: 24px; 
+            border-radius: 2rem; 
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .card-option:hover { 
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            border-color: currentColor;
+        }
+
+        .active-tab { 
+            background: white !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+        }
+
+        .vibe-romantic { color: #e11d48; }
+        .vibe-healing { color: #15803d; }
+        .vibe-bestie { color: #a16207; }
+        .vibe-family { color: #c2410c; }
+    </style>
+</head>
+<body class="max-w-xl mx-auto pb-20">
+
+    <div class="text-center py-12 relative z-10">
+        <h2 class="text-[10px] uppercase tracking-[0.5em] text-gray-400 mb-2 font-bold">The Void</h2>
+        <h1 id="mainTitle" class="romantic-font text-6xl text-red-600 mb-3 transition-colors duration-500">Classic Collection</h1>
+        <p id="subtitle" class="text-gray-400 text-[10px] uppercase tracking-[0.3em] font-semibold">Poetry for the souls we love most</p>
+    </div>
+
+    <div class="flex justify-between gap-2 mb-10 sticky top-4 z-50 glass p-2 rounded-full">
+        <button onclick="filterVibe('romantic')" id="tab-romantic" class="flex-1 py-2 rounded-full text-[10px] font-bold uppercase transition-all">Romance</button>
+        <button onclick="filterVibe('healing')" id="tab-healing" class="flex-1 py-2 rounded-full text-[10px] font-bold uppercase transition-all">Forgive</button>
+        <button onclick="filterVibe('bestie')" id="tab-bestie" class="flex-1 py-2 rounded-full text-[10px] font-bold uppercase transition-all">Friends</button>
+        <button onclick="filterVibe('family')" id="tab-family" class="flex-1 py-2 rounded-full text-[10px] font-bold uppercase transition-all">Family</button>
+    </div>
+
+    <div id="messageGrid" class="space-y-5 relative z-10"></div>
+
+    <div class="text-center mt-16 space-y-6 relative z-10">
+        <button onclick="window.location.href='index.html'" class="text-[10px] text-gray-400 uppercase tracking-widest hover:text-black transition-all">← Back to Hub</button>
+    </div>
+
+    <script>
+        const library = {
+            romantic: [
+                "I'm real proud to be married with such a wonderful, lovable, trustable, thoughtful, and amazing partner. I adore you so much.",
+                "My love for you grows stronger everyday.",
+                "I'm thankful for every little moment of laughter that we share everyday.",
+                "Our marriage is a constant source of joy and fulfillment.",
+                "You and I have an unbreakable bond that is built on trust, love and mutual respect.",
+                "In a world of temporary things, you are my forever feeling. ✨"
+            ],
+            healing: [
+                "I value our bond far more than I value being right. Let’s choose 'us' today. ❤️‍🩹",
+                "The strongest hearts are the ones that know how to mend. I'm ready to heal with you.",
+                "I miss the 'us' that laughs without worry. Can we find our way back there?",
+                "Love isn't the absence of conflict, it's the courage to stay and fix it together.",
+                "I don't want to be right; I just want to be close to you again. Let’s talk.",
+                "Every scar in our relationship is just proof that we were strong enough to survive the storm."
+            ],
+            bestie: [
+                "You’re the only person who can make me laugh when I’ve already decided to be in a bad mood. 🍭",
+                "Thanks for being the safe place where I don't have to pretend to be okay.",
+                "Life is a mess, but I'm glad we're making a mess of it together.",
+                "To the one who knows all my stories and still chose to stay: you're a legend."
+            ],
+            family: [
+                "Home isn't a coordinate on a map; it’s whenever I'm standing next to you. ❤️",
+                "Grateful for the roots that keep me grounded and the love that helps me grow.",
+                "Family is the only anchor that holds firm through every storm.",
+                "Thank you for being my safest harbor in this big, wide world."
+            ]
+        };
+
+        const vibeAssets = {
+            romantic: { color: '#be123c', bg: '#fff5f7', particles: ['🌸', '✨', '❤️'] },
+            healing: { color: '#15803d', bg: '#f0fdf4', particles: ['🌿', '✨', '🕊️'] }, 
+            bestie: { color: '#a16207', bg: '#fefce8', particles: ['⭐', '✨', '🤝'] },
+            family: { color: '#c2410c', bg: '#fff7ed', particles: ['🏠', '💝', '🧡'] }
+        };
+
+        let currentVibe = 'romantic';
+        const targetName = localStorage.getItem('targetName') || "Someone Special";
+
+        function filterVibe(vibe) {
+            currentVibe = vibe;
+            const asset = vibeAssets[vibe] || vibeAssets.romantic;
+            document.body.style.background = asset.bg;
+            document.getElementById('mainTitle').style.color = asset.color;
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                t.className = "flex-1 py-2 rounded-full text-[10px] font-bold uppercase transition-all text-gray-400";
+                t.style.color = ""; 
+            });
+            
+            const activeTab = document.getElementById(`tab-${vibe}`);
+            if(activeTab) {
+                activeTab.classList.add('active-tab');
+                activeTab.style.color = asset.color;
+            }
+
+            const grid = document.getElementById('messageGrid');
+            grid.innerHTML = '';
+            
+            const combinedList = [...(JSON.parse(localStorage.getItem(`custom_${vibe}`)) || []), ...library[vibe]];
+            
+            combinedList.forEach((text, i) => {
+                const div = document.createElement('div');
+                div.className = `card-option vibe-${vibe} italic text-sm leading-relaxed opacity-0 translate-y-4`;
+                div.style.animation = `fadeInUp 0.5s ease forwards ${i * 0.1}s`;
+                
+                // Add name if not already there
+                const personalizedText = text.includes(targetName) ? text : `${targetName}, ${text.charAt(0).toLowerCase() + text.slice(1)}`;
+                
+                div.innerText = `"${personalizedText}"`;
+                div.onclick = () => selectMessage(personalizedText, vibe);
+                grid.appendChild(div);
+            });
+        }
+
+        function selectMessage(msg, vibe) {
+            localStorage.setItem('libMessage', msg);
+            localStorage.setItem('libVibe', vibe);
+            window.location.href = 'index.html';
+        }
+
+        function spawnParticle() {
+            if (document.querySelectorAll('.particle').length > 25) return;
+            const asset = vibeAssets[currentVibe] || vibeAssets.romantic;
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerHTML = asset.particles[Math.floor(Math.random() * asset.particles.length)];
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            p.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            p.style.opacity = Math.random() * 0.5 + 0.2;
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 6000);
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }`;
+        document.head.appendChild(style);
+
+        setInterval(spawnParticle, 600);
+        window.onload = () => filterVibe('romantic');
+    </script>
+</body>
+</html>

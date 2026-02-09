@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You've Received Love ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,600&family=Poppins:wght@300;400;600&display=swap');
+        body { font-family: 'Poppins', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #fff5f7; }
+        .romantic-font { font-family: 'Dancing Script', cursive; }
+        .serif-font { font-family: 'Playfair Display', serif; }
+        .glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(15px); border-radius: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        #audioOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+        .petal { position: fixed; top: -10%; pointer-events: none; animation: fall linear infinite; z-index: 5; }
+        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="audioOverlay">
+        <h2 class="romantic-font text-6xl mb-6">You have a message...</h2>
+        <button onclick="unlockMessage()" class="px-10 py-5 bg-red-600 rounded-full font-bold animate-bounce text-xl shadow-2xl">Open with Music 🎵</button>
+    </div>
+
+    <div id="messageCard" class="glass p-12 max-w-2xl w-full text-center hidden">
+        <button onclick="toggleMusic()" id="musicBtn" class="absolute top-6 right-6 text-3xl opacity-60 hover:opacity-100 transition">🎵</button>
+        <div id="finalEmoji" class="text-8xl mb-6 drop-shadow-lg"></div>
+        <h3 id="finalTo" class="uppercase tracking-[0.5em] text-xs mb-8 text-red-500 font-bold"></h3>
+        <p id="finalText" class="serif-font text-3xl text-gray-800 italic leading-relaxed mb-10"></p>
+        <button onclick="respondToMessage()" class="px-8 py-3 bg-red-600 text-white rounded-full font-bold shadow-lg">Reply with Love 💌</button>
+    </div>
+
+    <audio id="audioPlayer" loop>
+        <source src="https://audio.jukehost.co.uk/7IC401wCxd8QHJ5Wexoo5YVjAc90Hd8x" type="audio/mpeg">
+    </audio>
+
+    <script>
+    const petalEmoji = { romantic: '❤️', bestie: '🤝', healing: '🌿', family: '🏠' };
+
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const msg = decodeURIComponent(params.get('msg') || '');
+        const name = decodeURIComponent(params.get('name') || 'Someone Special');
+        const vibe = params.get('vibe') || 'romantic';
+
+        if (!msg) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('finalTo').innerText = `TO ${name.toUpperCase()}`;
+        document.getElementById('finalText').innerText = `"${msg}"`;
+        document.getElementById('finalEmoji').innerText = petalEmoji[vibe];
+        document.body.style.background = vibeConfigs[vibe]?.color || 'linear-gradient(135deg, #ff4d4d, #800000)';
+    };
+
+    function unlockMessage() {
+        document.getElementById('audioOverlay').style.display = 'none';
+        document.getElementById('messageCard').classList.remove('hidden');
+        document.getElementById('audioPlayer').play();
+        spawnPetals();
+    }
+
+    function toggleMusic() {
+        const player = document.getElementById('audioPlayer');
+        if (player.paused) player.play();
+        else player.pause();
+    }
+
+    function respondToMessage() {
+        const senderName = document.getElementById('finalTo').innerText.replace('TO ', '');
+        window.location.href = `index.html?respondTo=${encodeURIComponent(senderName)}`;
+    }
+
+    function spawnPetals() {
+        const vibe = new URLSearchParams(window.location.search).get('vibe') || 'romantic';
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.className = 'petal';
+                p.innerHTML = petalEmoji[vibe];
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                p.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 7000);
+            }, i * 200);
+        }
+    }
+    </script>
+</body>
+</html>
