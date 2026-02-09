@@ -1,8 +1,4 @@
-To prepare your project for GitHub, you should save this as a file named `README.md` in your main folder.
 
-I have written this based on all the files you provided (`index.html`, `soul.html`, `library.html`, `message.html`, and `receiver.html`). This version includes a "Project Architecture" section to show how the files connect.
-
----
 
 # 💖 Love Hub & NAFSI: The Sovereign Soul
 
